@@ -2,7 +2,6 @@ package com.hanains.mysite.http.action.user;
 
 import com.hanains.http.action.Action;
 import com.hanains.http.action.ActionFactory;
-import com.hanains.mysite.http.action.main.IndexAction;
 
 public class UserActionFactory extends ActionFactory {
 	@Override
@@ -25,7 +24,7 @@ public class UserActionFactory extends ActionFactory {
 		} else if(actionName.equals("logout")) {
 			action = new LogoutAction();
 		} else {
-			action = new IndexAction();
+			action = new LoginFormAction();
 		}
 		
 		return action;

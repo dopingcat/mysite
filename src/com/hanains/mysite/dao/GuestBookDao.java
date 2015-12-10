@@ -1,6 +1,7 @@
 package com.hanains.mysite.dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,10 +11,18 @@ import java.util.List;
 import com.hanains.mysite.vo.GuestBookVo;
 
 public class GuestBookDao {
-	private GuestBookDBUtil dbUtil = null;
-	
-	public GuestBookDao() {
-		dbUtil = new GuestBookDBUtil();
+	private Connection getConnection() throws SQLException {
+		Connection connection = null;
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+		
+			String dbURL = "jdbc:oracle:thin:@localhost:1521:xe";
+			connection = DriverManager.getConnection( dbURL, "webdb", "webdb" );
+		} catch( ClassNotFoundException ex ){
+			System.out.println( "드라이버 로딩 실패-" + ex );
+		}
+		return connection;
 	}
 	
 	public List<GuestBookVo> getList() {
@@ -21,14 +30,15 @@ public class GuestBookDao {
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		ResultSet resultSet = null;
-		String sql = "select no, name, password, message, reg_date from GUESTBOOK";
+		String sql = 
+				"select no, name, password, message, reg_date "+
+				"from GUESTBOOK";
 		
 		try {
 			if(connection == null) {
-				connection = dbUtil.getConnection();
+				connection = getConnection();
 			}
 			pstmt = connection.prepareStatement(sql);
-			
 			resultSet = pstmt.executeQuery(sql);
 			
 			while(resultSet.next()) {
@@ -39,8 +49,6 @@ public class GuestBookDao {
 						resultSet.getString(4),
 						resultSet.getString(5)));
 			}
-		} catch (ClassNotFoundException cnfe) {
-			System.err.println("Driver Load failed - " + cnfe.toString());
 		} catch (SQLException sqle) {
 			System.err.println("excute sql failed - " + sqle.toString());
 		} finally {
@@ -62,13 +70,15 @@ public class GuestBookDao {
 	}
 	
 	public void insert(GuestBookVo vo) {
-		String sql = "insert into guestbook values(GUESTBOOK_SEQ.nextval, ?, ?, ?, SYSDATE)";
+		String sql = 
+				"insert into guestbook "+
+				"values(GUESTBOOK_SEQ.nextval, ?, ?, ?, SYSDATE)";
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		
 		try {
 			if(connection == null) {
-				connection = dbUtil.getConnection();
+				connection = getConnection();
 			}
 			pstmt = connection.prepareStatement(sql);
 			
@@ -77,8 +87,6 @@ public class GuestBookDao {
 			pstmt.setString(3, vo.getMessage());
 			
 			pstmt.executeUpdate();
-		} catch (ClassNotFoundException cnfe) {
-			System.err.println(cnfe.toString());
 		} catch (SQLException sqle) {
 			System.err.println(sqle.toString());
 		} finally {
@@ -96,13 +104,15 @@ public class GuestBookDao {
 	}
 	
 	public void delete(Long no, String password) {
-		String sql = "delete from guestbook where no=? and password=?";
+		String sql = 
+				"delete from guestbook " +
+				"where no=? and password=?";
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		
 		try {
 			if(connection == null) {
-				connection = dbUtil.getConnection();
+				connection = getConnection();
 			}
 			pstmt = connection.prepareStatement(sql);
 			
@@ -110,8 +120,6 @@ public class GuestBookDao {
 			pstmt.setString(2, password);
 			
 			pstmt.executeUpdate();
-		} catch (ClassNotFoundException cnfe) {
-			System.err.println(cnfe.toString());
 		} catch (SQLException sqle) {
 			System.err.println(sqle.toString());
 		} finally {

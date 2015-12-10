@@ -10,16 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.hanains.http.action.Action;
 import com.hanains.http.action.ActionFactory;
-import com.hanains.mysite.http.action.board.BoardActionFactory;
+import com.hanains.mysite.http.action.guestbook.GuestBookActionFactory;
 
-@WebServlet("/board")
-public class GuestBookServlet extends HttpServlet {
+@WebServlet("/guestbook")
+public class BoardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		
-		ActionFactory af = new BoardActionFactory();
+		ActionFactory af = new GuestBookActionFactory();
 		String actionName = request.getParameter("a");
 		
 		Action action = af.getAction(actionName);

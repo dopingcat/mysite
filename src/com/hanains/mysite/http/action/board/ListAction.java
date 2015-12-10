@@ -1,4 +1,4 @@
-package com.hanains.mysite.http.action.guestbook;
+package com.hanains.mysite.http.action.board;
 
 import java.io.IOException;
 
@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.hanains.http.HttpUtil;
 import com.hanains.http.action.Action;
-import com.hanains.mysite.dao.GuestBookDao;
+import com.hanains.mysite.dao.BoardDao;
 
 public class ListAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("list", new GuestBookDao().getList());
-		HttpUtil.forwarding(request, response, "/WEB-INF/views/guestbook/list.jsp");
+		request.setAttribute("list", new BoardDao().getList());
+		HttpUtil.forwarding(request, response, "/WEB-INF/views/board/list.jsp");
 	}
 }

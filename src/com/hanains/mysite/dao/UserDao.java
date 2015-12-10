@@ -14,17 +14,12 @@ public class UserDao {
 		Connection connection = null;
 		
 		try {
-			//1.드라이버 로딩
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-		
-			//2.커넥션 만들기(ORACLE DB)
-			String dbURL  = "jdbc:oracle:thin:@localhost:1521:xe";
+			String dbURL = "jdbc:oracle:thin:@localhost:1521:xe";
 			connection = DriverManager.getConnection( dbURL, "webdb", "webdb" );
-			
 		} catch( ClassNotFoundException ex ){
 			System.out.println( "드라이버 로딩 실패-" + ex );
 		}
-		
 		return connection;
 	}
 	
@@ -36,15 +31,12 @@ public class UserDao {
 		UserVo vo = null;
 		
 		try{
-			//1. get Connection
 			conn = getConnection();
 			
-			//2. prepare statement
 			String sql = 
-				" select no, name, email" +
-				"   from member" +
-				"  where email=?"+
-				"    and password=?";
+				"select no, name, email " +
+				"from member " +
+				"where email=? and password=?";
 			pstmt = conn.prepareStatement( sql );
 			
 			//3. binding
@@ -67,7 +59,6 @@ public class UserDao {
 		} catch( SQLException ex ) {
 			System.out.println( "SQL Error:" + ex );
 		} finally {
-			//5. clear resources
 			try{
 				if( rs != null ) {
 					rs.close();
@@ -91,30 +82,24 @@ public class UserDao {
 		PreparedStatement pstmt = null;
 		
 		try {
-			//1. DB Connection
 			conn = getConnection();
 			
-			//2. prepare statment
 			String sql = 
-				" insert" +
-				" into member" +
+				" insert into member" +
 				" values ( member_no_seq.nextval, ?, ?, ?, ? )";
 			pstmt = conn.prepareStatement( sql );
 			
-			//3. binding
 			pstmt.setString( 1, vo.getName() );
 			pstmt.setString( 2, vo.getEmail() );
 			pstmt.setString( 3, vo.getPassword() );
 			pstmt.setString( 4, vo.getGender() );
 			
-			//4. execute SQL
 			pstmt.executeUpdate();
 			
 		} catch( SQLException ex ) {
 			System.out.println( "sql error:" + ex );
 			ex.printStackTrace();
 		} finally {
-			//5. clear resources
 			try{
 				if( pstmt != null ) {
 					pstmt.close();
