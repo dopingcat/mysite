@@ -20,26 +20,30 @@
 					</tr>
 					<tr>
 						<td class="label">제목</td>
-						<td>제목입니다.</td>
+						<td>${boardVo.title}</td>
 					</tr>
 					<tr>
 						<td class="label">내용</td>
 						<td>
 							<div class="view-content">
-								내용 1입니다.<br>
-								내용 2입니다.<br>
-								내용 3입니다.
+							<% pageContext.setAttribute("cn", "\n"); %>
+							${fn:replace(boardVo.content, cn, "<br/>")}
 							</div>
 						</td>
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="">글목록</a>
-					<a href="">글수정</a>
+					<a href="/mysite/board">글목록</a>
+					<c:if test="${(not empty authUser) && (boardVo.memberNo eq authUser.no)}">
+						<a href="/mysite/board?a=modify&board_no=${boardVo.no}">글수정</a>
+					</c:if>
+					
 				</div>
 			</div>
 		</div>
-		<c:import url="/WEB-INF/views/include/navigation.jsp" />
+		<c:import url="/WEB-INF/views/include/navigation.jsp">
+			<c:param name="pwd" value="board" />
+		</c:import>
 		<c:import url="/WEB-INF/views/include/footer.jsp" />
 	</div>
 </body>

@@ -15,7 +15,7 @@
 		<div id="content">
 			<div id="board">
 				<form class="board-form" method="post" action="/mysite/board">
-					<input type = "hidden" name = "a" value="write">
+					<input type = "hidden" name = "a" value="insert">
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글쓰기</th>
@@ -35,10 +35,12 @@
 						<a href="/mysite/board">취소</a>
 						<input type="submit" value="등록">
 					</div>
-				</form>				
+				</form>
 			</div>
 		</div>
-		<c:import url="/WEB-INF/views/include/navigation.jsp" />
+		<c:import url="/WEB-INF/views/include/navigation.jsp">
+			<c:param name="pwd" value="board" />
+		</c:import>
 		<c:import url="/WEB-INF/views/include/footer.jsp" />
 	</div>
 </body>
