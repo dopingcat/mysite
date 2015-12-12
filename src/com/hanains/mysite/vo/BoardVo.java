@@ -4,6 +4,7 @@ public class BoardVo {
 	private Long no;
 	private String title;
 	private String content;
+	private Long memberNo;
 	private String memberName;
 	private Long viewCnt;
 	private String regDate;
@@ -12,11 +13,13 @@ public class BoardVo {
 		super();
 	}
 
-	public BoardVo(Long no, String title, String content, String memberName, Long viewCnt, String regDate) {
+	public BoardVo(Long no, String title, String content, Long memberNo, String memberName, Long viewCnt,
+			String regDate) {
 		super();
 		this.no = no;
 		this.title = title;
 		this.content = content;
+		this.memberNo = memberNo;
 		this.memberName = memberName;
 		this.viewCnt = viewCnt;
 		this.regDate = regDate;
@@ -44,6 +47,14 @@ public class BoardVo {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public Long getMemberNo() {
+		return memberNo;
+	}
+
+	public void setMemberNo(Long memberNo) {
+		this.memberNo = memberNo;
 	}
 
 	public String getMemberName() {
@@ -80,6 +91,8 @@ public class BoardVo {
 		builder.append(", content=");
 		builder.append(content);
 		builder.append(", memberNo=");
+		builder.append(memberNo);
+		builder.append(", memberName=");
 		builder.append(memberName);
 		builder.append(", viewCnt=");
 		builder.append(viewCnt);
@@ -88,6 +101,4 @@ public class BoardVo {
 		builder.append("]");
 		return builder.toString();
 	}
-	
-	
 }

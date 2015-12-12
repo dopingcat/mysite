@@ -13,7 +13,10 @@ import com.hanains.mysite.dao.BoardDao;
 public class ListAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("list", new BoardDao().getList());
+		BoardDao dao = new BoardDao();
+		request.setAttribute("currentPage", request.getParameter("pageNum"));
+		request.setAttribute("pageSize", dao.getPageSize());
+		request.setAttribute("boardList", dao.getList(request.getParameter("pageNum")));
 		HttpUtil.forwarding(request, response, "/WEB-INF/views/board/list.jsp");
 	}
 }
