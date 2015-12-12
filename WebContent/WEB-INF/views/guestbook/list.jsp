@@ -14,43 +14,55 @@
 		<c:import url="/WEB-INF/views/include/header.jsp" />
 		<div id="content">
 			<div id="guestbook">
-				<form action="/mysite/guestbook" method="post">
-					<input type="hidden" name="a" value="insert">
-					<table>
-						<tr>
-							<td>이름</td><td><input type="text" name="name"></td>
-							<td>비밀번호</td><td><input type="password" name="pass"></td>
-						</tr>
-						<tr>
-							<td colspan=4><textarea name="content" id="content"></textarea></td>
-						</tr>
-						<tr>
-							<td colspan=4 align=right><input type="submit" VALUE=" 확인 "></td>
-						</tr>
-					</table>
-				</form>
+				<c:choose>
+					<c:when test="${not empty authUser}">
+						<form action="/mysite/guestbook?a=insert" method="post">
+							<input type="hidden" name="a" value="insert">
+							<table>
+								<tr>
+									<td align="center">이름</td>
+									<td><input type="hidden" name="name" value="${authUser.name}"><b>${authUser.name}</b></td>
+									<td align="center">비밀번호</td>
+									<td><input type="password" name="password"></td>
+								</tr>
+								<tr>
+									<td colspan=4><textarea name="message" id="message"></textarea></td>
+								</tr>
+								<tr>
+									<td colspan=4 align=right><input type="submit"
+										VALUE=" 확인 "></td>
+								</tr>
+							</table>
+						</form>
+					</c:when>
+					<c:otherwise>
+						방명록을 남기시려면 로그인을 하세요.
+					</c:otherwise>
+				</c:choose>
 				<ul>
-					<li>
-						<table>
-							<tr>
-								<td>[4]</td>
-								<td>안대혁</td>
-								<td>2015-11-10 11:22:30</td>
-								<td><a href="">삭제</a></td>
-							</tr>
-							<tr>
-								<td colspan=4>
-								안녕하세요. ^^;<br>
-								하하하하	
-								</td>
-							</tr>
-						</table>
-						<br>
-					</li>
+					<% pageContext.setAttribute("cn", "\n"); %>
+					<c:set var="total" value="${fn:length(guestBookList)}" />
+					<c:forEach items="${guestBookList}" var="vo" varStatus="stat">
+						<li>
+							<table>
+								<tr>
+									<td align="center">[${total - stat.index}]</td>
+									<td>작성자 : ${vo.name}</td>
+									<td>작성일시 : ${vo.regDate}</td>
+									<td align="center"><a href="?a=form&no=${vo.no}">삭제</a></td>
+								</tr>
+								<tr>
+									<td colspan="4">${fn:replace(vo.message, cn, "<br/>")}</td>
+								</tr>
+							</table>
+						</li>
+					</c:forEach>
 				</ul>
 			</div>
 		</div>
-		<c:import url="/WEB-INF/views/include/navigation.jsp" />
+		<c:import url="/WEB-INF/views/include/navigation.jsp">
+			<c:param name="pwd" value="guestbook" />
+		</c:import>
 		<c:import url="/WEB-INF/views/include/footer.jsp" />
 	</div>
 </body>

@@ -13,7 +13,7 @@ import com.hanains.mysite.dao.GuestBookDao;
 public class ListAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("list", new GuestBookDao().getList());
+		request.setAttribute("guestBookList", new GuestBookDao().getList());
 		HttpUtil.forwarding(request, response, "/WEB-INF/views/guestbook/list.jsp");
 	}
 }

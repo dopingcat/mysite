@@ -24,6 +24,6 @@ public class InsertAction implements Action {
 		vo.setMessage(message);
 		new GuestBookDao().insert(vo);
 
-		response.sendRedirect("?");
+		response.sendRedirect("/mysite/guestbook");
 	}
 }
