@@ -13,8 +13,8 @@ import com.hanains.mysite.dao.BoardDao;
 public class ModifyAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("boardVo", new BoardDao().selectBoard(request.getParameter("board_no")));
-		
+		request.setAttribute("boardVo", BoardDao.getBoardDao().selectContent(request.getParameter("board_no")));
+		request.setAttribute("currentPage", request.getParameter("currentPage"));
 		HttpUtil.forwarding(request, response, "/WEB-INF/views/board/modify.jsp");
 	}
 }

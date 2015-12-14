@@ -33,9 +33,10 @@
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="/mysite/board">글목록</a>
+					<!-- <a href="/mysite/board?pageNum=현재 글의 페이지 넘버 받아오기">글목록</a> -->
+					<a href="/mysite/board?pageNum=${currentPage}">글목록</a>
 					<c:if test="${(not empty authUser) && (boardVo.memberNo eq authUser.no)}">
-						<a href="/mysite/board?a=modify&board_no=${boardVo.no}">글수정</a>
+						<a href="/mysite/board?a=modify&board_no=${boardVo.no}&currentPage=${currentPage}">글수정</a>
 					</c:if>
 					
 				</div>

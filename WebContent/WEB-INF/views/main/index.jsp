@@ -10,6 +10,7 @@
 <link href="/mysite/assets/css/main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<c:set var="pwd" value="main"/>
 	<div id="container">
 		<c:import url="/WEB-INF/views/include/header.jsp" />
 		<div id="wrapper">
@@ -26,7 +27,9 @@
 				</div>
 			</div>
 		</div>
-		<c:import url="/WEB-INF/views/include/navigation.jsp" />
+		<c:import url="/WEB-INF/views/include/navigation.jsp">
+			<c:param name="pwd" value="main" />
+		</c:import>
 		<c:import url="/WEB-INF/views/include/footer.jsp" />
 	</div>
 </body>

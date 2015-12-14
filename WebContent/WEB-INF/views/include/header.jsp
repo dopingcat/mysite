@@ -16,7 +16,7 @@
 				<c:when test="${not empty authUser}" >
 					<li><a href="">회원정보수정</a></li>
 					<li><a href="/mysite/user?a=logout">로그아웃</a></li>
-					<li>${sessionScope.authUser.name}님안녕하세요 ^^;</li>>
+					<li>${sessionScope.authUser.name}님 안녕하세요 ^^;</li>
 				</c:when>
 				<c:otherwise>
 					<li><a href="/mysite/user?a=loginform">로그인</a></li>

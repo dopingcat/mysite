@@ -11,19 +11,24 @@ import com.hanains.mysite.dao.BoardDao;
 import com.hanains.mysite.vo.BoardVo;
 import com.hanains.mysite.vo.UserVo;
 
-public class InsertAction implements Action {
+public class UpdateAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
+		request.setAttribute("currentPage", request.getParameter("currentPage"));
 		BoardVo vo = new BoardVo();
 		UserVo uVo = (UserVo)request.getSession().getAttribute("authUser");
 		
+		if(uVo == null) {
+			response.sendRedirect("/mysite/user?a=login");
+			return;
+		}
+		vo.setNo(Long.parseLong(request.getParameter("board_no")));
 		vo.setMemberNo(uVo.getNo());
 		vo.setMemberName(uVo.getName());
 		vo.setTitle(request.getParameter("title"));
 		vo.setContent(request.getParameter("content"));
-		BoardDao.getBoardDao().insert(vo);
-
-		response.sendRedirect("/mysite/board?pageNum=1");
+		BoardDao.getBoardDao().update(vo);
+		response.sendRedirect("/mysite/board?a=view&board_no="+request.getParameter("board_no"));
 	}
 }

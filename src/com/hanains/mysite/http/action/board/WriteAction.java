@@ -12,6 +12,7 @@ import com.hanains.http.action.Action;
 public class WriteAction implements Action {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("currentPage", request.getParameter("currentPage"));
 		HttpUtil.forwarding(request, response, "/WEB-INF/views/board/write.jsp");
 	}
 }

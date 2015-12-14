@@ -11,6 +11,15 @@ import java.util.List;
 import com.hanains.mysite.vo.BoardVo;
 
 public class BoardDao {
+	private static BoardDao boardDao = new BoardDao();
+	
+	private BoardDao() {
+	}
+	
+	public static BoardDao getBoardDao() {
+		return boardDao;
+	}
+	
 	private Connection getConnection() throws SQLException {
 		Connection connection = null;
 		
@@ -25,27 +34,26 @@ public class BoardDao {
 		return connection;
 	}
 	
-	public List<BoardVo> getSearchList(String keyword) {
+	public List<BoardVo> getSearchList(String keyword, String pageNum) {
 		List<BoardVo> list = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		ResultSet resultSet = null;
 		String sql = 
-				"select a.no, a.title, a.member_no, " +
-				"b.name as member_name, a.view_cnt, " +
-				"to_char(a.reg_date, 'yyyy-mm-dd hh:mi:ss') " +
-				"from board a, member b " +
-				"where a.member_no = b.no and a.title like ?" +
-				"order by a.reg_date desc";
-		
+				"SELECT no, title, member_no, member_name, view_cnt, reg_date, rnum, page, totcnt " +
+				"FROM (	SELECT list.*, ROWNUM AS RNUM, FLOOR(((ROWNUM-1)/10)+1) AS PAGE, COUNT(*) OVER() AS TOTCNT " +
+						"FROM (	SELECT b.no, b.title, b.member_no, m.name AS member_name, b.view_cnt, to_char(b.reg_date, 'yyyy-mm-dd hh:mi:ss') AS reg_date " +
+								"FROM board b, member m " +
+								"WHERE b.member_no = m.no AND b.title like ? " +
+								"ORDER BY b.reg_date desc) list) " +
+				"WHERE PAGE = ?";
 		try {
 			if(connection == null) {
 				connection = getConnection();
 			}
 			pstmt = connection.prepareStatement(sql);
-			
 			pstmt.setString(1, keyword);
-			
+			pstmt.setString(2, pageNum);
 			resultSet = pstmt.executeQuery();
 			
 			while(resultSet.next()) {
@@ -65,19 +73,52 @@ public class BoardDao {
 		return list;
 	}
 	
+	public Long getSearchPageSize(String keyword) {
+		Long pageSize = new Long(0);
+		
+		String sql = 
+				"SELECT MAX(PAGE) AS page_size " +
+				"FROM (	SELECT list.*, ROWNUM AS RNUM, FLOOR(((ROWNUM-1)/10)+1) AS PAGE, COUNT(*) OVER() AS TOTCNT " +
+						"FROM (	SELECT b.no, b.title, b.member_no, m.name AS member_name, b.view_cnt, to_char(b.reg_date, 'yyyy-mm-dd hh:mi:ss') AS reg_date " +
+								"FROM board b, member m " +
+								"WHERE b.member_no = m.no AND b.title LIKE ? " +
+								"ORDER BY b.reg_date DESC) list)";
+		
+		System.err.println(sql.replace("?", keyword));
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		ResultSet resultSet = null;
+		
+		try {
+			if(connection == null) {
+				connection = getConnection();
+			}
+			pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, keyword);
+			resultSet = pstmt.executeQuery();
+			
+			if(resultSet.next()) {
+				pageSize = resultSet.getLong(1);
+			}
+		} catch (SQLException sqle) {
+			sqle.printStackTrace();
+			System.err.println("excute sql failed - " + sqle.toString());
+		}
+		return pageSize;
+	}
+	
 	public List<BoardVo> getList(String pageNum) {
 		List<BoardVo> list = new ArrayList<>();
 		Connection connection = null;
 		PreparedStatement pstmt = null;
 		ResultSet resultSet = null;
-		
 		String sql = 
 				"SELECT no, title, member_no, member_name, view_cnt, reg_date, rnum, page, totcnt " +
 				"FROM (	SELECT list.*, ROWNUM AS RNUM, FLOOR(((ROWNUM-1)/10)+1) AS PAGE, COUNT(*) OVER() AS TOTCNT " +
 						"FROM (	select b.no, b.title, b.member_no, m.name as member_name, b.view_cnt, to_char(b.reg_date, 'yyyy-mm-dd hh:mi:ss') as reg_date " +
 								"from board b, member m " +
 								"where b.member_no = m.no " +
-								"order by b.reg_date desc) list)" +
+								"order by b.reg_date desc) list) " +
 				"WHERE PAGE = ?";
 		try {
 			if(connection == null) {
@@ -104,7 +145,7 @@ public class BoardDao {
 		return list;
 	}
 	
-	public Long getPageSize() {
+	public Long getTotalPageSize() {
 		Long pageSize = new Long(0);
 		String sql = 
 				"SELECT MAX(PAGE) as page_size " +
@@ -134,7 +175,7 @@ public class BoardDao {
 		return pageSize;
 	}
 	
-	public BoardVo selectBoard(String no) {
+	public BoardVo selectContent(String no) {
 		String sql = 
 				"select no, title, content, member_no " +
 				"from board where no=?";
